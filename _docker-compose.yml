@@ -2,7 +2,7 @@ version: '3'
 services:
 
   apps:
-    image: elymatos/open-semantic-search
+    image: opensemanticsearch/open-semantic-search
     depends_on:
       - rabbitmq
       - solr
@@ -20,10 +20,10 @@ services:
       - OPEN_SEMANTIC_ETL_SOLR=http://solr:8983/solr/
       - OPEN_SEMANTIC_ETL_TIKA_SERVER=http://tika:9998
     ports:
-      - "8085:80"
+      - "8080:80"
 
   etl:
-    image: elymatos/open-semantic-etl
+    image: opensemanticsearch/open-semantic-etl
     depends_on:
       - apps
       - rabbitmq
@@ -42,8 +42,6 @@ services:
       - config_etl:/etc/opensemanticsearch:ro
       # write access to persistant thumbnails dir
       - data_media:/var/opensemanticsearch/media
-      - E:\Ely\devel\solr\data:/var/opensemanticsearch/data
-      # - E:\Ely\devel\solr\open-semantic-search-mine\src\open-semantic-etl\etc:/etc
 
   solr:
     image: opensemanticsearch/solr
@@ -51,8 +49,8 @@ services:
       - data_solr:/var/solr
 
     # uncomment next two lines, if you want access the Solr API and admin UI on host IP
-    ports:
-      - "8983:8983"
+    #ports:
+    #  - "8983:8983"
 
   tika:
     image: opensemanticsearch/tika-server
@@ -60,24 +58,10 @@ services:
       - OMP_THREAD_LIMIT=1
 
   spacy-services:
-#    image: opensemanticsearch/spacy-services
-    image: jgontrum/spacyapi:pt_v2
-    ports:
-      - "8084:8080"
+    image: opensemanticsearch/spacy-services
 
   rabbitmq:
     image: rabbitmq
-
-  flower:
-    image: terbiumlabs/pypy-flower
-    command: flower --address=0.0.0.0 --port=5555 --broker_api=http://guest:guest@rabbitmq:15672/api/
-    environment:
-#        - CELERY_BROKER_URL=amqp://rabbitmq:5672//
-        - CELERY_BROKER_URL=amqp://rabbitmq
-    links:
-        - rabbitmq
-    ports:
-        - "5555:5555"
 
 volumes:
   config_etl:

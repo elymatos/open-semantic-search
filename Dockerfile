@@ -28,6 +28,12 @@ RUN apt-get update && apt-get install --no-install-recommends --yes \
     python3-dev \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+RUN python3 -m django --version
+
+RUN pip3 install django==2.2.0
+
+RUN python3 -m django --version
+
 # install django-import-export
 RUN pip3 install --no-cache-dir django-import-export==1.2.0
 
